@@ -1,5 +1,6 @@
 package dev.seanharris.urlalias.api.model;
 
+import dev.seanharris.urlalias.api.repository.UrlAliasDocument;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -25,6 +26,11 @@ public record UrlAlias(String alias, URI redirectUrl, URI host, URI shortenedUrl
     /// Returns a response entity representing this alias as a redirection.
     public ResponseEntity<Void> found() {
         return ResponseEntity.status(HttpStatus.FOUND).location(this.shortenedUrl()).build();
+    }
+
+    /// Returns serialisable data as a document model
+    public UrlAliasDocument toDocument() {
+        return new UrlAliasDocument(alias, redirectUrl.toString());
     }
 
 }
