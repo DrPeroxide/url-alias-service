@@ -30,7 +30,7 @@ class ShortenApiControllerTest {
     @Test
     void givenNoExistingAlias_whenShortenUrl_thenReturnShortenedUrl() {
         when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.empty());
-        when(mockUrlAliasManager.createAlias(TEST_ALIAS, TEST_REDIRECT)).thenReturn(getTestAlias());
+        when(mockUrlAliasManager.createAlias(TEST_ALIAS, TEST_REDIRECT)).thenReturn(TEST_ALIAS_RECORD);
 
         var request = ShortenPostRequest.builder().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT).build();
         var response = controller.shortenPost(request);
@@ -41,7 +41,19 @@ class ShortenApiControllerTest {
 
     @Test
     void givenExistingAlias_whenShortenUrl_thenReturn400Response() {
-        when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.of(getTestAlias()));
+        when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.of(TEST_ALIAS_RECORD));
+
+        var request = ShortenPostRequest.builder().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT).build();
+        var response = controller.shortenPost(request);
+        assertThat(response).has(httpStatusOf(HttpStatus.BAD_REQUEST));
+        var responseBody = response.getBody();
+        assertThat(responseBody).isNull();
+    }
+
+    @Test
+    void givenMalformedAlias_whenShortenUrl_thenReturn400Response() {
+        when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.empty());
+        when(mockUrlAliasManager.createAlias(TEST_ALIAS, TEST_REDIRECT)).thenThrow(IllegalArgumentException.class);
 
         var request = ShortenPostRequest.builder().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT).build();
         var response = controller.shortenPost(request);
@@ -51,6 +63,6 @@ class ShortenApiControllerTest {
     }
 
     private ShortenPost201Response expectedResponseBody() {
-        return new ShortenPost201Response().shortUrl(getTestAlias().shortenedUrl().toString());
+        return new ShortenPost201Response().shortUrl(TEST_ALIAS_RECORD.shortenedUrl().toString());
     }
 }

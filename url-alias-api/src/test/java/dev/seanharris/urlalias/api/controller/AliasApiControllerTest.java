@@ -32,12 +32,12 @@ class AliasApiControllerTest {
 
     @Test
     void givenAlias_whenGetAliasRedirect_thenResponseContainingRedirectionShouldBeReturned() {
-        UrlAlias expectedAlias = TestData.getTestAlias();
+        UrlAlias expectedAlias = TestData.TEST_ALIAS_RECORD;
         when(mockUrlAliasManager.getAlias(TestData.TEST_ALIAS)).thenReturn(Optional.of(expectedAlias));
         ResponseEntity<Void> response = controller.redirectToAlias(TestData.TEST_ALIAS);
         assertThat(response)
                 .has(httpStatusOf(HttpStatus.FOUND))
-                .has(locationHeaderSetTo(expectedAlias.shortenedUrl()));
+                .has(locationHeaderSetTo(expectedAlias.redirectUrl()));
     }
 
     @Test
@@ -57,7 +57,7 @@ class AliasApiControllerTest {
 
     @RequiredArgsConstructor
     enum DeleteAliasLogicTable {
-        DELETE_SUCCESS(Optional.of(TestData.getTestAlias()), HttpStatus.NO_CONTENT),
+        DELETE_SUCCESS(Optional.of(TestData.TEST_ALIAS_RECORD), HttpStatus.NO_CONTENT),
         NOT_FOUND(Optional.empty(), HttpStatus.NOT_FOUND);
 
         private final Optional<UrlAlias> deleteResult;

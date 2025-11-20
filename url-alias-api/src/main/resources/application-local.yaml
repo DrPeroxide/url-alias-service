@@ -1,0 +1,13 @@
+spring:
+  data:
+    mongodb:
+      uri: "mongodb://root:secret@localhost:27017/mydatabase?authSource=admin"
+  docker:
+    compose:
+      enabled: true
+      file: ./compose.yaml
+      skip:
+        in-tests: false
+
+redirect:
+  host: http://localhost:8080

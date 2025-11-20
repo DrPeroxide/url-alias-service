@@ -27,7 +27,7 @@ class UrlsApiControllerTest {
 
     @Test
     void givenExistingAlias_whenGetAllUrls_thenReturnAllAliasData() {
-        when(mockUrlAliasManager.getAllAliases()).thenReturn(List.of(getTestAlias()));
+        when(mockUrlAliasManager.getAllAliases()).thenReturn(List.of(TEST_ALIAS_RECORD));
         var response = controller.getAllUrls();
         assertThat(response).has(httpStatusOf(HttpStatus.OK));
         var responseBody = response.getBody();
@@ -36,7 +36,7 @@ class UrlsApiControllerTest {
 
     private GetAllUrls200ResponseInner expectedResponseBody() {
         return new GetAllUrls200ResponseInner()
-                .shortUrl(getTestAlias().shortenedUrl().toString())
+                .shortUrl(TEST_ALIAS_RECORD.shortenedUrl().toString())
                 .alias(TEST_ALIAS)
                 .fullUrl(TEST_REDIRECT);
     }

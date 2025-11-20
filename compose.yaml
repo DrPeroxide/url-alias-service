@@ -1,24 +1,13 @@
+include:
+  - ./url-alias-api/compose.yaml
 services:
-  db:
-    image: 'mongo:latest'
-    environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=root'
-    ports:
-      - '27017:27017'
-    volumes:
-      - db:/data/db
   api:
     build: ./url-alias-api
     ports:
       - "8080:8080"
     environment:
       SPRING_APPLICATION_JSON: '{
-          "spring.data.mongodb.uri" : "mongodb://root:secret@db:27017/mydatabase?authSource=admin"
+          "spring.profiles.active" : "local"
         }'
     depends_on:
       - db
-
-volumes:
-  db:

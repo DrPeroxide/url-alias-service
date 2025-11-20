@@ -25,7 +25,7 @@ public record UrlAlias(String alias, URI redirectUrl, URI host, URI shortenedUrl
 
     /// Returns a response entity representing this alias as a redirection.
     public ResponseEntity<Void> found() {
-        return ResponseEntity.status(HttpStatus.FOUND).location(this.shortenedUrl()).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(this.redirectUrl()).build();
     }
 
     /// Returns serialisable data as a document model

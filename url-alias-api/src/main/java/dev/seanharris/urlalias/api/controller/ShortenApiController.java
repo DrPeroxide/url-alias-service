@@ -6,11 +6,13 @@ import dev.seanharris.urlalias.api.model.ShortenPostRequest;
 import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ShortenApiController implements ShortenApi {
@@ -19,11 +21,16 @@ public class ShortenApiController implements ShortenApi {
 
     /// See [ShortenApi#shortenPost(ShortenPostRequest)]
     @Override
-    public ResponseEntity<ShortenPost201Response> shortenPost(ShortenPostRequest shortenPostRequest) {
-        Optional<UrlAlias> foundAlias = urlAliasManager.getAlias(shortenPostRequest.getCustomAlias());
+    public ResponseEntity<ShortenPost201Response> shortenPost(ShortenPostRequest request) {
+        Optional<UrlAlias> foundAlias = urlAliasManager.getAlias(request.getCustomAlias());
         if (foundAlias.isEmpty()) {
-            UrlAlias newAlias = urlAliasManager.createAlias(shortenPostRequest.getCustomAlias(), shortenPostRequest.getFullUrl());
-            return createdResponse(newAlias);
+            try {
+                UrlAlias newAlias = urlAliasManager.createAlias(request.getCustomAlias(), request.getFullUrl());
+                return createdResponse(newAlias);
+            } catch (IllegalArgumentException e) {
+                log.info("Shorten URL request {} failed", request.getCustomAlias(), e);
+                return ResponseEntity.badRequest().build();
+            }
         }
         return ResponseEntity.badRequest().build();
     }
