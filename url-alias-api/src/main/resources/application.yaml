@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: url-alias-api
+
+security:
+  basic:
+    enable: false
+  ignored: /**

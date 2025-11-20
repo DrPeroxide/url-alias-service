@@ -15,7 +15,7 @@ paths:
             schema:
               type: object
               required:
-                - fullUrl
+                - redirectUrl
               properties:
                 fullUrl:
                   type: string
@@ -39,6 +39,7 @@ paths:
 
   /{alias}:
     get:
+      operationId: redirectToAlias
       summary: Redirect to full URL
       parameters:
         - name: alias
@@ -53,6 +54,7 @@ paths:
           description: Alias not found
 
     delete:
+      operationId: deleteAlias
       summary: Delete a shortened URL
       parameters:
         - name: alias
@@ -68,6 +70,7 @@ paths:
 
   /urls:
     get:
+      operationId: getAllUrls
       summary: List all shortened URLs
       responses:
         '200':
