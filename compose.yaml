@@ -1,5 +1,5 @@
 include:
-  - ./url-alias-api/compose.yaml
+  - ./url-alias-api/compose-api-dependencies.yaml
 services:
   api:
     build: ./url-alias-api

@@ -1,5 +1,6 @@
 package dev.seanharris.urlalias.api.service;
 
+import dev.seanharris.urlalias.api.configuration.HostProvider;
 import dev.seanharris.urlalias.api.configuration.RedirectProperties;
 import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.repository.UrlAliasDocument;
@@ -15,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UrlAliasManagerService implements UrlAliasManager {
 
-    private final RedirectProperties redirectProperties;
+    private final HostProvider hostProvider;
     private final UrlAliasRepository urlAliasRepository;
 
     private UrlAlias fromDocument(UrlAliasDocument urlAliasDocument) {
-        return new UrlAlias(urlAliasDocument.alias(), URI.create(urlAliasDocument.fullUrl()), redirectProperties.host());
+        return new UrlAlias(urlAliasDocument.alias(), URI.create(urlAliasDocument.fullUrl()), hostProvider.rootUri());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class UrlAliasManagerService implements UrlAliasManager {
 
     @Override
     public UrlAlias createAlias(String customAlias, String fullUrl) {
-        UrlAlias newAlias = new UrlAlias(customAlias, URI.create(fullUrl), redirectProperties.host());
+        UrlAlias newAlias = new UrlAlias(customAlias, URI.create(fullUrl), hostProvider.rootUri());
         UrlAliasDocument createdAlias = urlAliasRepository.save(newAlias.toDocument());
         return fromDocument(createdAlias);
     }

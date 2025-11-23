@@ -1,14 +1,19 @@
 package dev.seanharris.urlalias.api.test.integration;
 
+import dev.seanharris.urlalias.api.configuration.RedirectProperties;
 import dev.seanharris.urlalias.api.model.ShortenPostRequest;
 import dev.seanharris.urlalias.api.repository.UrlAliasRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -21,16 +26,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
 class UrlAliasApiApplicationIT {
+
+    @LocalServerPort
+    int port;
 
     @Autowired
     private UrlAliasRepository urlAliasRepository;
 
-    @BeforeAll
-    static void init() {
-        RestAssured.port = 8080;
+    @BeforeEach
+    void init() {
+        RestAssured.port = port;
     }
 
     @AfterEach
