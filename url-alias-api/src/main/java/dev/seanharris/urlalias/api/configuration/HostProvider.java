@@ -9,6 +9,10 @@ import org.springframework.context.event.EventListener;
 
 import java.net.URI;
 
+/// Utility service to provide the complete host URI for the API.
+/// Protocol and hostname/IP are configured via the properties
+/// Port is initially sourced from the server.port property,
+/// but is updated when the web server is initialised.
 @RequiredArgsConstructor
 @Configuration
 public class HostProvider {

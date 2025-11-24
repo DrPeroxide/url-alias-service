@@ -22,17 +22,20 @@ public class ShortenApiController implements ShortenApi {
     /// See [ShortenApi#shortenPost(ShortenPostRequest)]
     @Override
     public ResponseEntity<ShortenPost201Response> shortenPost(ShortenPostRequest request) {
+        log.info("Shorten URL request received: {}", request);
         Optional<UrlAlias> foundAlias = urlAliasManager.getAlias(request.getCustomAlias());
         if (foundAlias.isEmpty()) {
             try {
                 UrlAlias newAlias = urlAliasManager.createAlias(request.getCustomAlias(), request.getFullUrl());
                 return createdResponse(newAlias);
             } catch (IllegalArgumentException e) {
-                log.info("Shorten URL request {} failed", request.getCustomAlias(), e);
+                log.info("Shorten URL request {} failed;", request.getCustomAlias(), e);
                 return ResponseEntity.badRequest().build();
             }
+        } else {
+            log.info("Shorten URL request {} failed; alias already exists!", request.getCustomAlias());
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
     }
 
     private static ResponseEntity<ShortenPost201Response> createdResponse(UrlAlias newAlias) {
