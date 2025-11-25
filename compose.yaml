@@ -4,10 +4,16 @@ services:
   api:
     build: ./url-alias-api
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       SPRING_APPLICATION_JSON: '{
-          "spring.profiles.active" : "local"
+          "spring.profiles.active" : "local",
+          "server.port" : "8081",
+          "spring.data.mongodb.uri" : "mongodb://root:secret@db:27017/mydatabase?authSource=admin"
         }'
     depends_on:
       - db
+  ui:
+    build: ./url-alias-webui
+    ports:
+      - "8080:8080"
