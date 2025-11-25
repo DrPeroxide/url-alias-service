@@ -6,12 +6,14 @@ import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.function.Function;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 public class UrlsApiController implements UrlsApi {
 

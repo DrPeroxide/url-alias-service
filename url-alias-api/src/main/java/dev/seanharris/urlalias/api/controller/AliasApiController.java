@@ -6,12 +6,14 @@ import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 public class AliasApiController implements AliasApi {
 
