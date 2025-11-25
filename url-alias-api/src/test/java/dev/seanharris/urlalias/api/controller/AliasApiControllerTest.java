@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static dev.seanharris.urlalias.api.test.util.ResponseEntityAssertions.httpStatusOf;
 import static dev.seanharris.urlalias.api.test.util.ResponseEntityAssertions.locationHeaderSetTo;
+import static dev.seanharris.urlalias.api.test.util.TestData.TEST_ALIAS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -33,8 +34,8 @@ class AliasApiControllerTest {
     @Test
     void givenAlias_whenGetAliasRedirect_thenResponseContainingRedirectionShouldBeReturned() {
         UrlAlias expectedAlias = TestData.TEST_ALIAS_RECORD;
-        when(mockUrlAliasManager.getAlias(TestData.TEST_ALIAS)).thenReturn(Optional.of(expectedAlias));
-        ResponseEntity<Void> response = controller.redirectToAlias(TestData.TEST_ALIAS);
+        when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.of(expectedAlias));
+        ResponseEntity<Void> response = controller.getRedirectByAlias(TEST_ALIAS);
         assertThat(response)
                 .has(httpStatusOf(HttpStatus.FOUND))
                 .has(locationHeaderSetTo(expectedAlias.redirectUrl()));
@@ -42,25 +43,25 @@ class AliasApiControllerTest {
 
     @Test
     void givenAliasDoesNotExist_whenGetAliasRedirect_thenNotFoundResponseShouldBeReturned() {
-        when(mockUrlAliasManager.getAlias(TestData.TEST_ALIAS)).thenReturn(Optional.empty());
-        ResponseEntity<Void> response = controller.redirectToAlias(TestData.TEST_ALIAS);
+        when(mockUrlAliasManager.getAlias(TEST_ALIAS)).thenReturn(Optional.empty());
+        ResponseEntity<Void> response = controller.getRedirectByAlias(TEST_ALIAS);
         assertThat(response).has(httpStatusOf(HttpStatus.NOT_FOUND));
     }
 
     @ParameterizedTest
     @EnumSource(DeleteAliasLogicTable.class)
     void givenAlias_whenDeleteAlias_thenHttpResponseShouldBeReturned(DeleteAliasLogicTable params) {
-        when(mockUrlAliasManager.getAlias(TestData.TEST_ALIAS)).thenReturn(params.deleteResult);
-        ResponseEntity<Void> response = controller.deleteAlias(TestData.TEST_ALIAS);
+        when(mockUrlAliasManager.deleteAlias(TEST_ALIAS)).thenReturn(params.deleteResult);
+        ResponseEntity<Void> response = controller.deleteAlias(TEST_ALIAS);
         assertThat(response).has(httpStatusOf(params.expectedHttpStatus));
     }
 
     @RequiredArgsConstructor
     enum DeleteAliasLogicTable {
-        DELETE_SUCCESS(Optional.of(TestData.TEST_ALIAS_RECORD), HttpStatus.NO_CONTENT),
-        NOT_FOUND(Optional.empty(), HttpStatus.NOT_FOUND);
+        DELETE_SUCCESS(true, HttpStatus.NO_CONTENT),
+        NOT_FOUND(false, HttpStatus.NOT_FOUND);
 
-        private final Optional<UrlAlias> deleteResult;
+        private final boolean deleteResult;
         private final HttpStatus expectedHttpStatus;
     }
 

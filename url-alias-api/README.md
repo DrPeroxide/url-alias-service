@@ -30,3 +30,4 @@ Via the CLI, you can add `--spring.profiles.active=local`.
 
 ## OpenAPI Spec Additions
 - Added operationId used to generate API method names
+- Added title used to generate schema class names

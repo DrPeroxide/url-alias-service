@@ -11,8 +11,9 @@ public interface UrlAliasManager {
     /// @return url data for given alias, or empty if no data exists.
     Optional<UrlAlias> getAlias(String alias);
 
-    /// Deletes any stored data for the given alias, fails silently if no data exists.
-    void deleteAlias(UrlAlias alias);
+    /// Deletes any stored data for the given alias,
+    /// @return true if the deletion succeeded, false if no data exists
+    boolean deleteAlias(String alias);
 
     /// Creates and stores a new alias using the given parameters.
     ///

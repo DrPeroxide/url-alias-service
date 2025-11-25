@@ -1,7 +1,6 @@
 package dev.seanharris.urlalias.api.service;
 
 import dev.seanharris.urlalias.api.configuration.HostProvider;
-import dev.seanharris.urlalias.api.configuration.RedirectProperties;
 import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.repository.UrlAliasDocument;
 import dev.seanharris.urlalias.api.repository.UrlAliasRepository;
@@ -29,13 +28,20 @@ public class UrlAliasManagerService implements UrlAliasManager {
     }
 
     @Override
-    public void deleteAlias(UrlAlias urlAlias) {
-        urlAliasRepository.deleteById(urlAlias.alias());
+    public boolean deleteAlias(String alias) {
+        if (!urlAliasRepository.existsById(alias)) {
+            return false;
+        }
+        urlAliasRepository.deleteById(alias);
+        return true;
     }
 
     @Override
-    public UrlAlias createAlias(String customAlias, String fullUrl) {
-        UrlAlias newAlias = new UrlAlias(customAlias, URI.create(fullUrl), hostProvider.rootUri());
+    public UrlAlias createAlias(String alias, String fullUrl) {
+        if (urlAliasRepository.existsById(alias)) {
+            throw new CreateAliasException(alias, "Alias already exists!");
+        }
+        UrlAlias newAlias = new UrlAlias(alias, URI.create(fullUrl), hostProvider.rootUri());
         UrlAliasDocument createdAlias = urlAliasRepository.save(newAlias.toDocument());
         return fromDocument(createdAlias);
     }

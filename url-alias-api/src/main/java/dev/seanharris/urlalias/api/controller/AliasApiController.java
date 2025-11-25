@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @Slf4j
 @RestController
 @CrossOrigin
@@ -23,19 +21,21 @@ public class AliasApiController implements AliasApi {
     @Override
     public ResponseEntity<Void> deleteAlias(String alias) {
         log.info("Delete alias request received for {}", alias);
-        Optional<UrlAlias> foundAlias = urlAliasManager.getAlias(alias);
-        if (foundAlias.isEmpty()) {
+        if (urlAliasManager.deleteAlias(alias)) {
+            return ResponseEntity.noContent().build();
+        } else {
             return UrlAlias.notFound();
+
         }
-        urlAliasManager.deleteAlias(foundAlias.get());
-        return ResponseEntity.noContent().build();
     }
 
-    /// See [AliasApi#redirectToAlias(String)]
+    /// See [AliasApi#getRedirectByAlias(String)]
     @Override
-    public ResponseEntity<Void> redirectToAlias(String alias) {
-        log.info("Redirect alias request received for {}", alias);
-        return urlAliasManager.getAlias(alias).map(UrlAlias::found).orElseGet(UrlAlias::notFound);
+    public ResponseEntity<Void> getRedirectByAlias(String alias) {
+        log.debug("Redirect alias request received for {}", alias);
+        return urlAliasManager.getAlias(alias)
+                .map(UrlAlias::found)
+                .orElseGet(UrlAlias::notFound);
     }
 
 }

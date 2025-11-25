@@ -1,6 +1,6 @@
 package dev.seanharris.urlalias.api.controller;
 
-import dev.seanharris.urlalias.api.model.GetAllUrls200ResponseInner;
+import dev.seanharris.urlalias.api.model.FoundAlias;
 import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +34,8 @@ class UrlsApiControllerTest {
         assertThat(responseBody).contains(expectedResponseBody());
     }
 
-    private GetAllUrls200ResponseInner expectedResponseBody() {
-        return new GetAllUrls200ResponseInner()
+    private FoundAlias expectedResponseBody() {
+        return new FoundAlias()
                 .shortUrl(TEST_ALIAS_RECORD.shortenedUrl().toString())
                 .alias(TEST_ALIAS)
                 .fullUrl(TEST_REDIRECT);

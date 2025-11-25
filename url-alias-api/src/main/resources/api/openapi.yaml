@@ -7,12 +7,14 @@ info:
 paths:
   /shorten:
     post:
+      operationId: createNewAlias
       summary: Shorten a URL
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              title: newAlias
               type: object
               required:
                 - redirectUrl
@@ -29,6 +31,7 @@ paths:
           content:
             application/json:
               schema:
+                title: createdAlias
                 type: object
                 properties:
                   shortUrl:
@@ -39,7 +42,7 @@ paths:
 
   /{alias}:
     get:
-      operationId: redirectToAlias
+      operationId: getRedirectByAlias
       summary: Redirect to full URL
       parameters:
         - name: alias
@@ -80,6 +83,7 @@ paths:
               schema:
                 type: array
                 items:
+                  title: foundAlias
                   type: object
                   properties:
                     alias:

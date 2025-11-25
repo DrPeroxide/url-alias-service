@@ -1,10 +1,11 @@
 package dev.seanharris.urlalias.api.test.integration;
 
 import dev.seanharris.urlalias.api.configuration.RedirectProperties;
-import dev.seanharris.urlalias.api.model.ShortenPostRequest;
+import dev.seanharris.urlalias.api.model.NewAlias;
 import dev.seanharris.urlalias.api.repository.UrlAliasRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.apache.http.Header;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,15 +49,15 @@ class UrlAliasApiApplicationIT {
 
     @Test
     void givenAliasAndFullUrl_whenShortenUrl_thenGetAlias_thenRedirectIsReturned() {
-        var request = new ShortenPostRequest().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
-        String shortenedUri = given().contentType(ContentType.JSON)
+        var request = new NewAlias().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
+        String shortenedUrl = given().contentType(ContentType.JSON)
                 .body(request)
                 .post("/shorten")
                 .path("shortUrl");
 
         given().redirects()
                 .follow(false)
-                .get(URI.create(shortenedUri))
+                .get(URI.create(shortenedUrl))
                 .then()
                 .statusCode(is(HttpStatus.FOUND.value()))
                 .and()
@@ -65,15 +66,15 @@ class UrlAliasApiApplicationIT {
 
     @Test
     void givenAlias_whenShortenUrl_thenDeleteAlias_thenAliasIsDeleted() {
-        var request = new ShortenPostRequest().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
-        String shortenedUri = given().contentType(ContentType.JSON)
+        var request = new NewAlias().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
+        String shortenedUrl = given().contentType(ContentType.JSON)
                 .body(request)
                 .post("/shorten")
                 .path("shortUrl");
 
         assertThat(urlAliasRepository.findAll()).isNotEmpty();
 
-        given().delete(URI.create(shortenedUri))
+        given().delete(URI.create(shortenedUrl))
                 .then()
                 .statusCode(is(HttpStatus.NO_CONTENT.value()));
 
@@ -82,8 +83,8 @@ class UrlAliasApiApplicationIT {
 
     @Test
     void givenAlias_whenShortenUrl_thenGetAliases_thenAliasIsDisplayedInList() {
-        var request = new ShortenPostRequest().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
-        given().contentType(ContentType.JSON)
+        var request = new NewAlias().customAlias(TEST_ALIAS).fullUrl(TEST_REDIRECT);
+        String shortenedUrl = given().contentType(ContentType.JSON)
                 .body(request)
                 .post("/shorten")
                 .path("shortUrl");
@@ -92,6 +93,8 @@ class UrlAliasApiApplicationIT {
                 .then()
                 .statusCode(is(HttpStatus.OK.value()))
                 .and()
-                .body("alias", contains(TEST_ALIAS));
+                .body("alias", contains(TEST_ALIAS))
+                .body("shortUrl", contains(shortenedUrl))
+                .body("fullUrl", contains(TEST_REDIRECT));
     }
 }

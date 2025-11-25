@@ -1,8 +1,8 @@
 package dev.seanharris.urlalias.api.controller;
 
 import dev.seanharris.urlalias.api.ShortenApi;
-import dev.seanharris.urlalias.api.model.ShortenPost201Response;
-import dev.seanharris.urlalias.api.model.ShortenPostRequest;
+import dev.seanharris.urlalias.api.model.CreatedAlias;
+import dev.seanharris.urlalias.api.model.NewAlias;
 import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +21,17 @@ public class ShortenApiController implements ShortenApi {
 
     private final UrlAliasManager urlAliasManager;
 
-    /// See [ShortenApi#shortenPost(ShortenPostRequest)]
+    /// See [ShortenApi#createNewAlias(NewAlias)]
     @Override
-    public ResponseEntity<ShortenPost201Response> shortenPost(ShortenPostRequest request) {
-        log.info("Shorten URL request received: {}", request);
-        Optional<UrlAlias> foundAlias = urlAliasManager.getAlias(request.getCustomAlias());
-        if (foundAlias.isEmpty()) {
-            try {
-                UrlAlias newAlias = urlAliasManager.createAlias(request.getCustomAlias(), request.getFullUrl());
-                return createdResponse(newAlias);
-            } catch (IllegalArgumentException e) {
-                log.info("Shorten URL request {} failed;", request.getCustomAlias(), e);
-                return ResponseEntity.badRequest().build();
-            }
-        } else {
-            log.info("Shorten URL request {} failed; alias already exists!", request.getCustomAlias());
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<CreatedAlias> createNewAlias(NewAlias request) {
+        log.debug("New Alias request received: {}", request);
+        UrlAlias newAlias = urlAliasManager.createAlias(request.getCustomAlias(), request.getFullUrl());
+        log.info("Created new alias: {}", newAlias);
+        return createdResponse(newAlias);
     }
 
-    private static ResponseEntity<ShortenPost201Response> createdResponse(UrlAlias newAlias) {
-        var response = new ShortenPost201Response().shortUrl(newAlias.shortenedUrl().toString());
+    private static ResponseEntity<CreatedAlias> createdResponse(UrlAlias newAlias) {
+        var response = new CreatedAlias().shortUrl(newAlias.shortenedUrl().toString());
         return ResponseEntity.created(newAlias.shortenedUrl()).body(response);
     }
 

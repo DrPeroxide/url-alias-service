@@ -1,7 +1,7 @@
 package dev.seanharris.urlalias.api.controller;
 
 import dev.seanharris.urlalias.api.UrlsApi;
-import dev.seanharris.urlalias.api.model.GetAllUrls200ResponseInner;
+import dev.seanharris.urlalias.api.model.FoundAlias;
 import dev.seanharris.urlalias.api.model.UrlAlias;
 import dev.seanharris.urlalias.api.service.UrlAliasManager;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class UrlsApiController implements UrlsApi {
 
     /// See [UrlsApi#getAllUrls()]
     @Override
-    public ResponseEntity<List<GetAllUrls200ResponseInner>> getAllUrls() {
-        List<GetAllUrls200ResponseInner> foundAliases = urlAliasManager.getAllAliases().stream().map(toApiModel()).toList();
+    public ResponseEntity<List<FoundAlias>> getAllUrls() {
+        List<FoundAlias> foundAliases = urlAliasManager.getAllAliases().stream().map(toApiModel()).toList();
         return ResponseEntity.ok(foundAliases);
     }
 
-    private static Function<UrlAlias, GetAllUrls200ResponseInner> toApiModel() {
-        return alias -> new GetAllUrls200ResponseInner()
+    private static Function<UrlAlias, FoundAlias> toApiModel() {
+        return alias -> new FoundAlias()
                 .fullUrl(alias.redirectUrl().toString())
                 .shortUrl(alias.shortenedUrl().toString())
                 .alias(alias.alias());
