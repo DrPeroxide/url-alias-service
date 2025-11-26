@@ -4,7 +4,8 @@ Web interface for the URL Alias service, developed with Vue 3 and Vite.
 
 ## Developer Guide
 
-> [!IMPORTANT] Prerequisites
+> [!IMPORTANT]
+> **Prerequisites**
 >
 > - NPM 11 (or your preferred package manager)
 > - Node 25

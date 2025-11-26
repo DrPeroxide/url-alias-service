@@ -2,14 +2,16 @@
 
 A simple utility for shortening urls. Composed of a Vue.js webapp supported by a Spring Boot REST API and mongoDB database.
 
-> [!NOTE] See also...
+> [!TIP]
+> See documentation for individual services here:
 >
 > - [Rest API](url-alias-api/README.md)
 > - [WEB UI](url-alias-webui/README.md)
 
 ## Quick Start
 
-> [!IMPORTANT] Prerequisites
+> [!IMPORTANT]
+> **Prerequisites**
 >
 > - Docker daemon is available
 > - Ports 8080 and 8081 are free

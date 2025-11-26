@@ -4,7 +4,8 @@ Rest API handling server-side logic and data management for the URl Alias app.
 
 ## Developer Guide
 
-> [!IMPORTANT] Prerequisites
+> [!IMPORTANT]
+> **Prerequisites**
 >
 > - JDK 21
 > - Docker daemon is available
