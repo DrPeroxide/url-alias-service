@@ -1,61 +1,73 @@
 <script setup>
-import { ref, watchEffect } from 'vue'
-const API_URL = `http://localhost:8081`
+import { ref } from 'vue'
+import FoundAlias from './components/FoundAlias.vue'
+import NewAlias from './components/NewAlias.vue'
+
+const API_URL = import.meta.env.VITE_API_URL
 const aliases = ref([])
-const newAlias = ref({customAlias: "alias", fullUrl: "http://example.com", shortUrl: ""})
 
-watchEffect(() => {
-  updateAliases()
-})
-
-function updateAliases() {
+function update() {
   const url = `${API_URL}/urls`
   fetch(url)
-  .then(response => response.json())
-  .then(data => aliases.value = data)
+    .then(response => response.json())
+    .then(json => aliases.value = json)
 }
-
-
-function deleteAlias(alias) {
-  const url = `${API_URL}/${alias}`
-  fetch(url, {
-    method: 'DELETE'
-  })
-  .finally(() => updateAliases())
-}
-
-
-function addNewAlias() {
-  const url = `${API_URL}/shorten`
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(newAlias.value)
-  })
-  .then(response => response.json())
-  .then(data => newAlias.value.shortUrl = data.shortUrl)
-  .finally(() => updateAliases())
-}
-
+update()
 </script>
 
 <template>
-  <h1>URL Alias Service</h1>
-  <p>
-    <input v-model="newAlias.customAlias">
-    <input v-model="newAlias.fullUrl">
-    <button @click="addNewAlias">Shorten</button>
-  </p>
-  <h2 v-if="newAlias.shortUrl != ''">
-    Shortened URL: <a :href="newAlias.shortUrl" target="_blank">{{ newAlias.shortUrl }}</a>
-  </h2>
-  <ul v-if="aliases.length > 0">
-    <li v-for="{ alias, fullUrl, shortUrl } in aliases" :key="alias">
-      {{ alias }} - <a :href="fullUrl" target="_blank">{{ fullUrl }}</a> - <a :href="shortUrl" target="_blank">{{ shortUrl }}</a> - <button @click="deleteAlias(alias)">Delete</button>
-    </li>
-  </ul>
+  <div class="leftDiv">
+    <h1>URL Alias Service</h1>
+    <NewAlias />
+  </div>
+  <div class="rightDiv">
+    <h2>Current aliases</h2>
+    <TransitionGroup tag="ul" name="fade" class="container">
+      <FoundAlias v-for="{alias, fullUrl, shortUrl} in aliases" :key="alias" :alias="alias" :full-url="fullUrl" :short-url="shortUrl" @reload-aliases="update"/>
+    </TransitionGroup>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  position: relative;
+  padding: 0;
+  list-style-type: none;
+}
+
+.leftDiv {
+  background-color: #efefef;
+  color: #000;
+  height: 400px;
+  width: 48%;
+  float: left;
+}
+
+.rightDiv {
+  background-color: #efefef;
+  color: #000;
+  height: 400px;
+  width: 48%;
+  float: right;
+}
+
+/* 1. declare transition */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+  position: absolute;
+}
+</style>
