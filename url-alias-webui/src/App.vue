@@ -17,7 +17,7 @@ update()
 
 <template>
   <div class="leftDiv">
-    <h1>URL Alias Service</h1>
+    <h1>URL Shortener</h1>
     <NewAlias />
   </div>
   <div class="rightDiv">

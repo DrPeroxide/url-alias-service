@@ -1,38 +1,32 @@
 # url-alias-webui
 
-Developed with Vue 3 in Vite.
+Web interface for the URL Alias service, developed with Vue 3 and Vite.
 
-## Recommended IDE Setup
+## Developer Guide
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+> [!IMPORTANT] Prerequisites
+>
+> - NPM 11 (or your preferred package manager)
+> - Node 25
+> - The url-alias-api is available on port 8080 with `docker compose -f ../compose.yaml up api -d`
 
-## Recommended Browser Setup
+1. Install project dependencies with `npm install`.
+2. Run the Vite web server in development mode with `npm run dev`.
+3. Open the UI with a modern broswer via the Local link displayed in the output.
+4. Close the server with `CTRL + C` when done.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+The webapp will update automatically as you make changes to the source,
+ though you should still refresh your browser when checking your changes.
 
-## Customize configuration
+### Structure
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+The source code is stored under [/src](./src) and consists of a main.js file, an App.vue file and a number of vue components under [/components](./src/components).
 
-## Project Setup
+Environment variables, such as the URL of the REST api, are contained in [.env](./env).
 
-```sh
-npm install
-```
 
-### Compile and Hot-Reload for Development
+### Testing
 
-```sh
-npm run dev
-```
+Unit tests are stored under [/test](./test) and can be ran using `npm run test`.
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+This will run vitest, which will in turn run all unit tests before waiting for changes. When changes are made to the source or test code, the tests will automatically re run.
