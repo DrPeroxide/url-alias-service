@@ -18,7 +18,7 @@ update()
 <template>
   <div class="leftDiv">
     <h1>URL Shortener</h1>
-    <NewAlias />
+    <NewAlias @reload-aliases="update" />
   </div>
   <div class="rightDiv">
     <h2>Current aliases</h2>
